@@ -19,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({"password", "authorities", "accountNonExpired", "enabled", "accountNonLocked", "credentialNonLocked", "events"})
+@JsonIgnoreProperties({"password", "authorities", "accountNonExpired", "enabled", "accountNonLocked", "credentialNonLocked"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private String email;
     private LocalDate birthDay;
     private String password;
-    private URL profilePicture;
+    private String profilePicture;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
