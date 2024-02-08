@@ -43,8 +43,11 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
     }
 
+    // disables token check for the below endpoints
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return new AntPathMatcher().match("/auth/**", request.getServletPath());
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        return pathMatcher.match("/auth/**", request.getServletPath()) ||
+                pathMatcher.match("/chat/**", request.getServletPath());
     }
 }
