@@ -1,7 +1,8 @@
 package epicode.capstoneepicode;
 
 import com.github.javafaker.Faker;
-import epicode.capstoneepicode.payload.NewUserDTO;
+import epicode.capstoneepicode.payload.user.NewUserDTO;
+import epicode.capstoneepicode.service.AuthService;
 import epicode.capstoneepicode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Component;
 public class RunnerPopulateData implements CommandLineRunner {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthService authService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -40,6 +44,6 @@ public class RunnerPopulateData implements CommandLineRunner {
 //                "1234",
 //                "1234"
 //                );
-//        userService.save(u);
+//        authService.save(u);
     }
 }

@@ -31,7 +31,7 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorsDTO handleAcessDenied(AccessDeniedException ex) {
+    public ErrorsDTO handleAccessDenied(AccessDeniedException ex) {
         return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
     }
 
