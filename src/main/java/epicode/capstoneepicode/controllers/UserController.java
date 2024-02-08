@@ -8,12 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserController {
     @Autowired
@@ -22,12 +19,21 @@ public class UserController {
     @Autowired
     private UserDAO userDAO;
 
+    // re-consider(which is not relevant)
     @GetMapping("")
     public Page<User> getUsers(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "10") int size,
                                @RequestParam(defaultValue = "username") String sort) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
         return userDAO.findAll(pageable);
+    }
+
+    @GetMapping("/{username}")
+    public Page<User> getUsersByUsername(@PathVariable String username, @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int size,
+                                         @RequestParam(defaultValue = "username") String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        return userDAO.findUsersByUsername(username, pageable);
     }
 
 }
