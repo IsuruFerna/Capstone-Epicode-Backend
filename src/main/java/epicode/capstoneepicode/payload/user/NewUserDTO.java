@@ -1,4 +1,4 @@
-package epicode.capstoneepicode.payload;
+package epicode.capstoneepicode.payload.user;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
