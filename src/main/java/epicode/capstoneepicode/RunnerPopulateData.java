@@ -1,12 +1,15 @@
 package epicode.capstoneepicode;
 
 import com.github.javafaker.Faker;
+import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.payload.user.NewUserDTO;
 import epicode.capstoneepicode.service.AuthService;
 import epicode.capstoneepicode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.Random;
 
 @Component
 public class RunnerPopulateData implements CommandLineRunner {
@@ -28,20 +31,11 @@ public class RunnerPopulateData implements CommandLineRunner {
                     "1234",
                     "1234"
                     );
-            authService.save(u);
+            User saved = authService.save(u);
+
+            Random rnd = new Random();
+            System.out.println("this is random state: " + rnd.nextBoolean());
+
         }
-
-
-
-//        NewUserDTO u = new NewUserDTO(
-//                faker.name().firstName(),
-//                faker.name().lastName(),
-//                faker.name().username(),
-//                faker.internet().emailAddress(),
-//                "2003-05-24",
-//                "1234",
-//                "1234"
-//                );
-//        authService.save(u);
     }
 }

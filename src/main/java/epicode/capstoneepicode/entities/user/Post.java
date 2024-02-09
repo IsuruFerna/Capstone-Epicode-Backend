@@ -21,6 +21,7 @@ public class Post {
     private String content;
     private String media;
     private LocalDateTime timeStamp;
+    private Boolean edited;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private User user;
