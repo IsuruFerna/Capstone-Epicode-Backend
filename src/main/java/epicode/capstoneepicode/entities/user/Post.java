@@ -1,8 +1,10 @@
 package epicode.capstoneepicode.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -23,6 +25,7 @@ public class Post {
     private LocalDateTime timeStamp;
     private Boolean edited;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     private User user;
 }
