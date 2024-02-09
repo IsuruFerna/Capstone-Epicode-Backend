@@ -1,5 +1,6 @@
 package epicode.capstoneepicode.service;
 
+import epicode.capstoneepicode.entities.user.Role;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.UnauthorizedException;
@@ -67,6 +68,7 @@ public class AuthService {
         newUser.setUsername(body.username());
         newUser.setEmail(body.email());
         newUser.setBirthDay(birthDay);
+        newUser.setRole(Role.USER);
         newUser.setPassword(bcrypt.encode(body.password()));
 
 

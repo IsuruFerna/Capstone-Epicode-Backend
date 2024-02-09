@@ -28,6 +28,7 @@ public class UserController {
         return userDAO.findAll(pageable);
     }
 
+    // to search users
     @GetMapping("/{username}")
     public Page<User> getUsersByUsername(@PathVariable String username, @RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "10") int size,
