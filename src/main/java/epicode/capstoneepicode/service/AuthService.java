@@ -70,8 +70,7 @@ public class AuthService {
         newUser.setBirthDay(birthDay);
         newUser.setRole(Role.USER);
         newUser.setPassword(bcrypt.encode(body.password()));
-
-
+        
         return userDAO.save(newUser);
     }
 }

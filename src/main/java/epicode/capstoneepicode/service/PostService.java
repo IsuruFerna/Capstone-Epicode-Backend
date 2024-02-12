@@ -10,13 +10,10 @@ import epicode.capstoneepicode.exceptions.UnauthorizedException;
 import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.repository.PostDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -58,6 +55,7 @@ public class PostService {
         Post found = this.findById(id);
         User u = userService.findById(user.getId());
 
+        // check user permissions
         if(!found.getUser().equals(u)) {
             throw new UnauthorizedException("User have no permission to delete this post!");
         }
@@ -68,9 +66,9 @@ public class PostService {
         User u = userService.findById(user.getId());
         Post found = this.findById(id);
 
-        // checks if the user trying to modify is one of his posts or not
+        // checks if the user trying to modify is one of his own posts or not
         if(!found.getUser().equals(u)) {
-            throw new UnauthorizedException("User has no permission to edit post: " + id);
+            throw new UnauthorizedException("User has no permission to edit this post: " + id);
         }
 
         found.setMedia(body.media());
