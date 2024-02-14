@@ -7,6 +7,7 @@ import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.payload.post.NewPostResponse;
+import epicode.capstoneepicode.payload.post.ResponsePostDTO;
 import epicode.capstoneepicode.repository.PostDAO;
 import epicode.capstoneepicode.service.PostService;
 import epicode.capstoneepicode.service.UserService;
@@ -39,15 +40,15 @@ public class PostController {
 
     // this is for the home page
     @GetMapping("")
-    public Page<Post> getPosts() {
-        Pageable pageable = PageRequest.of(0, 20, Sort.by("timeStamp").descending());
-        return postDAO.findAll(pageable);
+    public Page<ResponsePostDTO> getPosts(@RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.by("timeStamp").descending());
+        return postService.findALl(pageable);
     }
 
     // get posts by user id
     @GetMapping("/{userId}")
-    public Page<Post> userPosts(@PathVariable UUID userId) {
-        Pageable pageable = PageRequest.of(0, 20, Sort.by("timeStamp").descending());
+    public Page<Post> userPosts(@PathVariable UUID userId, @RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.by("timeStamp").descending());
         return postDAO.findPostsByUserid(userId, pageable);
     }
 

@@ -8,13 +8,18 @@ import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
 import epicode.capstoneepicode.exceptions.UnauthorizedException;
 import epicode.capstoneepicode.payload.post.PostDTO;
+import epicode.capstoneepicode.payload.post.ResponsePostDTO;
 import epicode.capstoneepicode.repository.PostDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,6 +53,24 @@ public class PostService {
 
     public Post findById(UUID id) {
         return postDAO.findById(id).orElseThrow(()-> new NotFoundException(id));
+    }
+
+    public Page<ResponsePostDTO> findALl(Pageable pageable) {
+        Page<Post> pagePosts = postDAO.findAll(pageable);
+        List<ResponsePostDTO> posts = pagePosts.stream().map(post ->
+         new ResponsePostDTO(
+                    post.getId(),
+                    post.getContent(),
+                    post.getMedia(),
+                    post.getTimeStamp(),
+                    post.getEdited(),
+                    post.getUser().getUsername(),
+                    post.getUser().getFirstName(),
+                    post.getUser().getLastName()
+            )
+        ).toList();
+
+        return new PageImpl<>(posts, pageable, pagePosts.getTotalElements());
     }
 
     public void findByIdAndDelete(User user, UUID id) {
