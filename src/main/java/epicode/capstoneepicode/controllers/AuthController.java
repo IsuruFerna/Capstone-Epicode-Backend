@@ -40,7 +40,7 @@ public class AuthController {
         System.out.println(validation);
         if(validation.hasErrors()) {
             System.out.println(validation.getAllErrors());
-            throw new BadRequestException("There are Errors in register payload!");
+            throw new BadRequestException(validation.getAllErrors());
         } else {
             User newUser = authService.save(newUserPayload);
             return new NewUserResponseDTO(newUser.getId());

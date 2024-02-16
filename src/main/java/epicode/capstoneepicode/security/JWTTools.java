@@ -2,6 +2,7 @@ package epicode.capstoneepicode.security;
 
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.UnauthorizedException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
