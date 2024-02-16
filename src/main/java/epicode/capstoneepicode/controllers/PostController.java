@@ -45,11 +45,11 @@ public class PostController {
         return postService.findALl(pageable);
     }
 
-    // get posts by user id
-    @GetMapping("/{userId}")
-    public Page<Post> userPosts(@PathVariable UUID userId, @RequestParam(defaultValue = "0") int page) {
+    // get posts by username
+    @GetMapping("/{username}")
+    public Page<Post> userPosts(@PathVariable String username, @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("timeStamp").descending());
-        return postDAO.findPostsByUserid(userId, pageable);
+        return postDAO.findPostsByUserid(username, pageable);
     }
 
     @PostMapping("")
