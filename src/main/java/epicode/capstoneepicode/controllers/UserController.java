@@ -39,6 +39,11 @@ public class UserController {
         return userDAO.findAll(pageable);
     }
 
+    @GetMapping("/user/{username}")
+    public User getUser(@PathVariable String username) {
+        return userService.findByUsername(username);
+    }
+
     // to search users
     @GetMapping("/{username}")
     public Page<User> getUsersByUsername(@PathVariable String username, @RequestParam(defaultValue = "0") int page,

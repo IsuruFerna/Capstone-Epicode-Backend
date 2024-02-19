@@ -39,6 +39,7 @@ public class PostService {
             throw new BadRequestException("Unable to post content due to empty inputs!");
         }
 
+
         // solved some issues instead of passing directly the user
         User u = userService.findById(user.getId());
 
@@ -100,10 +101,22 @@ public class PostService {
         return postDAO.save(found);
     }
 
-    public Post uploadImage(UUID id, MultipartFile file) throws IOException {
-        Post found = this.findById(id);
+    public Post saveMedia(MultipartFile file, User user) throws IOException {
+        if(file.isEmpty()) {
+            throw new BadRequestException("Unable to post content due to empty inputs!");
+        }
+
+        // solved some issues instead of passing directly the user
+        User u = userService.findById(user.getId());
+
+        Post post = new Post();
+        post.setUser(u);
+        post.setTimeStamp(LocalDateTime.now());
+        post.setEdited(false);
+
         String imageURL = (String) cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
-        found.setMedia(imageURL);
-        return postDAO.save(found);
+        post.setMedia(imageURL);
+
+        return  postDAO.save(post);
     }
 }

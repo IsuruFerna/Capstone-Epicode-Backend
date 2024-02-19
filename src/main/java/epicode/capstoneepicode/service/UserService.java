@@ -32,6 +32,10 @@ public class UserService {
         return userDAO.findById(id).orElseThrow(()-> new NotFoundException(id));
     }
 
+    public User findByUsername(String username) {
+        return userDAO.findByUsername(username).orElseThrow(()-> new NotFoundException(username));
+    }
+
     public User findByEmail(String email) {
         return userDAO.findByEmail(email).orElseThrow(()-> new NotFoundException(email));
     }

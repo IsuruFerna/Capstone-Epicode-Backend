@@ -5,6 +5,7 @@ package epicode.capstoneepicode.controllers;
 import epicode.capstoneepicode.entities.user.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
+import epicode.capstoneepicode.payload.post.NewMediaResponse;
 import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.payload.post.NewPostResponse;
 import epicode.capstoneepicode.payload.post.ResponsePostDTO;
@@ -21,6 +22,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -54,17 +56,35 @@ public class PostController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public NewPostResponse postPost(@AuthenticationPrincipal User currentUser,
+    public Post postPost(@AuthenticationPrincipal User currentUser,
                                     @RequestBody @Validated PostDTO newPostPayload, BindingResult validation) throws IOException {
         System.out.println(validation);
         if(validation.hasErrors()) {
             System.out.println(validation.getAllErrors());
             throw new BadRequestException("There are Errors in post payload");
         } else {
-            Post newPost = postService.save(currentUser, newPostPayload);
-            return new NewPostResponse(newPost.getId());
+//            Post newPost = postService.save(currentUser, newPostPayload);
+//            return new NewPostResponse(newPost.getId(), newPost.getTimeStamp(), newPost.getEdited());
+
+            return postService.save(currentUser, newPostPayload);
         }
     }
+
+    @PostMapping("/media")
+    @ResponseStatus(HttpStatus.CREATED)
+    public NewMediaResponse postMedia(@AuthenticationPrincipal User currentUser,
+                                     @RequestParam("media") MultipartFile file
+                                     ) throws IOException {
+        try {
+            Post post = postService.saveMedia(file, currentUser);
+            return new NewMediaResponse(post.getMedia(), post.getId());
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
+
+
+
 
     // ************ user can handle his own posts ***************
     @PutMapping("/{postId}")
@@ -77,7 +97,7 @@ public class PostController {
             throw new BadRequestException("There are Errors in post payload");
         } else {
             Post updated = postService.findByIdAndUpdate(currentUser, postId, updatePostPayload);
-            return new NewPostResponse(updated.getId());
+            return new NewPostResponse(updated.getId(), updated.getTimeStamp(), updated.getEdited());
         }
     }
 
