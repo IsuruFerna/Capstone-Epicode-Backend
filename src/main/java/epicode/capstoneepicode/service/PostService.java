@@ -39,16 +39,24 @@ public class PostService {
             throw new BadRequestException("Unable to post content due to empty inputs!");
         }
 
-
         // solved some issues instead of passing directly the user
         User u = userService.findById(user.getId());
 
-        Post post = new Post();
+        // check if there's an Image in the post
+        Post post;
+        if(body.postId() != null) {
+            post = this.findById(body.postId());
+
+            System.out.println("found the media");
+        } else {
+            post = new Post();
+            post.setUser(u);
+            post.setTimeStamp(LocalDateTime.now());
+            post.setEdited(false);
+        }
+
         post.setContent(body.content());
-        post.setUser(u);
-        post.setMedia(body.media());
-        post.setTimeStamp(LocalDateTime.now());
-        post.setEdited(false);
+
         return  postDAO.save(post);
     }
 

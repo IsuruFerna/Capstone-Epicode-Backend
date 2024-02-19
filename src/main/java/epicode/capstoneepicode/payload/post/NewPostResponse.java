@@ -7,5 +7,6 @@ public record NewPostResponse(
         UUID id,
         LocalDateTime timeStamp,
         Boolean edited
+
 ) {
 }
