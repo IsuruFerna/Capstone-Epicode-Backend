@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -122,9 +123,33 @@ public class PostService {
         post.setTimeStamp(LocalDateTime.now());
         post.setEdited(false);
 
-        String imageURL = (String) cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+        Map<String, Object> uploadResult = cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
+        String imageURL =  uploadResult.get("url").toString();
+        String imagePubicId = uploadResult.get("public_id").toString();
+
+        post.setImagePublicId(imagePubicId);
         post.setMedia(imageURL);
 
         return  postDAO.save(post);
+    }
+
+    public Post deleteMedia(User user, UUID postId) throws IOException {
+        Post post = this.findById(postId);
+        User u = userService.findById(user.getId());
+
+        // delete the image
+        Map destroyResult = cloudinaryUploader.uploader().destroy(post.getImagePublicId(), ObjectUtils.emptyMap());
+
+        if("ok".equals(destroyResult.get("result"))) {
+            System.out.println("image deleted " + post);
+            post.setImagePublicId(null);
+            post.setMedia(null);
+
+        } else {
+            System.out.println("image does not deleted " + post);
+        }
+
+        return postDAO.save(post);
     }
 }

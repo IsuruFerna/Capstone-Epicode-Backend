@@ -107,6 +107,10 @@ public class PostController {
             postService.findByIdAndDelete(currentUser, postId);
     }
 
+    @PatchMapping("/{postId}")
+    public Post deleteMedia(@AuthenticationPrincipal User currentUser, @PathVariable UUID postId) throws IOException {
+       return postService.deleteMedia(currentUser, postId);
+    }
 
 
 
