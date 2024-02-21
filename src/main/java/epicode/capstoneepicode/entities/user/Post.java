@@ -27,6 +27,6 @@ public class Post {
     private String imagePublicId;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private User user;
 }
