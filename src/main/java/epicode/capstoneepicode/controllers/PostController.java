@@ -2,9 +2,11 @@ package epicode.capstoneepicode.controllers;
 
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import epicode.capstoneepicode.entities.user.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
+import epicode.capstoneepicode.payload.post.NewMediaResponse;
 import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.payload.post.NewPostResponse;
 import epicode.capstoneepicode.payload.post.ResponsePostDTO;
@@ -21,8 +23,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -45,25 +49,63 @@ public class PostController {
         return postService.findALl(pageable);
     }
 
-    // get posts by user id
-    @GetMapping("/{userId}")
-    public Page<Post> userPosts(@PathVariable UUID userId, @RequestParam(defaultValue = "0") int page) {
+    // get posts by username
+    @GetMapping("/{username}")
+    public Page<Post> userPosts(@PathVariable String username, @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("timeStamp").descending());
-        return postDAO.findPostsByUserid(userId, pageable);
+        return postDAO.findPostsByUserid(username, pageable);
     }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public NewPostResponse postPost(@AuthenticationPrincipal User currentUser,
+    public Post postPost(@AuthenticationPrincipal User currentUser,
                                     @RequestBody @Validated PostDTO newPostPayload, BindingResult validation) throws IOException {
         System.out.println(validation);
         if(validation.hasErrors()) {
             System.out.println(validation.getAllErrors());
             throw new BadRequestException("There are Errors in post payload");
         } else {
-            Post newPost = postService.save(currentUser, newPostPayload);
-            return new NewPostResponse(newPost.getId());
+//            Post newPost = postService.save(currentUser, newPostPayload);
+//            return new NewPostResponse(newPost.getId(), newPost.getTimeStamp(), newPost.getEdited());
+
+            return postService.save(currentUser, newPostPayload);
         }
+    }
+
+    @PatchMapping("/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Post updatePost(
+            @AuthenticationPrincipal User currentUser,
+            @RequestBody PostDTO payload,
+            @PathVariable UUID postId
+    ) throws IOException {
+
+        return  postService.findByIdAndUpdate(currentUser, postId, payload);
+    }
+
+    @PostMapping("/media")
+    @ResponseStatus(HttpStatus.CREATED)
+    public NewMediaResponse postMedia(@AuthenticationPrincipal User currentUser,
+                                     @RequestParam("media") MultipartFile file
+                                     ) throws IOException {
+        try {
+            Post post = postService.saveMedia(file, currentUser);
+            return new NewMediaResponse(post.getMedia(), post.getId());
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @PatchMapping("/media/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    public NewMediaResponse updatePostMedia(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam("media") MultipartFile file,
+            @PathVariable UUID postId
+    ) throws IOException {
+
+        Post updated = postService.updatePostMedia(file, postId, currentUser);
+        return new NewMediaResponse(updated.getMedia(), updated.getId());
     }
 
     // ************ user can handle his own posts ***************
@@ -77,11 +119,19 @@ public class PostController {
             throw new BadRequestException("There are Errors in post payload");
         } else {
             Post updated = postService.findByIdAndUpdate(currentUser, postId, updatePostPayload);
-            return new NewPostResponse(updated.getId());
+            return new NewPostResponse(updated.getId(), updated.getTimeStamp(), updated.getEdited());
         }
     }
 
+    @DeleteMapping("media/{postId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePostMedia(@AuthenticationPrincipal User currentUser,
+                           @PathVariable UUID postId) throws IOException {
+            postService.deleteMedia(currentUser, postId);
+    }
+
     @DeleteMapping("/{postId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(@AuthenticationPrincipal User currentUser,
                            @PathVariable UUID postId) throws IOException {
             postService.findByIdAndDelete(currentUser, postId);

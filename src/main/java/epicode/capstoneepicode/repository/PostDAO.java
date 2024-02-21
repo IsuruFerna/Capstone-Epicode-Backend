@@ -14,6 +14,6 @@ import java.util.UUID;
 public interface PostDAO extends JpaRepository<Post, UUID> {
 //    Page<Post> findByUser(User user, Pageable pageable);
 
-    @Query("SELECT p FROM Post p Join p.user u WHERE u.id = :userId")
-    Page<Post> findPostsByUserid(@Param("userId") UUID userId, Pageable pageable);
+    @Query("SELECT p FROM Post p Join p.user u WHERE u.username = :username")
+    Page<Post> findPostsByUserid(@Param("username") String username, Pageable pageable);
 }

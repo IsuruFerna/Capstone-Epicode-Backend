@@ -7,6 +7,7 @@ import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
 import epicode.capstoneepicode.exceptions.UnauthorizedException;
+import epicode.capstoneepicode.payload.post.NewMediaResponse;
 import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.payload.post.ResponsePostDTO;
 import epicode.capstoneepicode.repository.PostDAO;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -42,12 +44,20 @@ public class PostService {
         // solved some issues instead of passing directly the user
         User u = userService.findById(user.getId());
 
-        Post post = new Post();
+        // check if there's an Image in the post
+        Post post;
+        if(body.postId() != null) {
+            post = this.findById(body.postId());
+
+        } else {
+            post = new Post();
+            post.setUser(u);
+            post.setTimeStamp(LocalDateTime.now());
+            post.setEdited(false);
+        }
+
         post.setContent(body.content());
-        post.setUser(u);
-        post.setMedia(body.media());
-        post.setTimeStamp(LocalDateTime.now());
-        post.setEdited(false);
+
         return  postDAO.save(post);
     }
 
@@ -94,16 +104,77 @@ public class PostService {
             throw new UnauthorizedException("User has no permission to edit this post: " + id);
         }
 
-        found.setMedia(body.media());
+        if (!body.media().isEmpty()) {
+            found.setMedia(body.media());
+        }
         found.setContent(body.content());
         found.setEdited(true);
         return postDAO.save(found);
     }
 
-    public Post uploadImage(UUID id, MultipartFile file) throws IOException {
-        Post found = this.findById(id);
-        String imageURL = (String) cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
-        found.setMedia(imageURL);
-        return postDAO.save(found);
+    public Post saveMedia(MultipartFile file, User user) throws IOException {
+        if(file.isEmpty()) {
+            throw new BadRequestException("Unable to post content due to empty inputs!");
+        }
+
+        // solved some issues instead of passing directly the user
+        User u = userService.findById(user.getId());
+
+        Post post = new Post();
+        post.setUser(u);
+        post.setTimeStamp(LocalDateTime.now());
+        post.setEdited(false);
+
+        Map<String, Object> uploadResult = cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
+        String imageURL =  uploadResult.get("url").toString();
+        String imagePubicId = uploadResult.get("public_id").toString();
+
+        post.setImagePublicId(imagePubicId);
+        post.setMedia(imageURL);
+
+        return  postDAO.save(post);
+    }
+
+    public void deleteMedia(User user, UUID postId) throws IOException {
+        Post post = this.findById(postId);
+        User u = userService.findById(user.getId());
+
+        if(!post.getUser().equals(u)) {
+            throw new UnauthorizedException("User has no permission to edit this post: " + postId);
+        }
+
+        // delete the image
+        Map destroyResult = cloudinaryUploader.uploader().destroy(post.getImagePublicId(), ObjectUtils.emptyMap());
+
+        if("ok".equals(destroyResult.get("result"))) {
+            System.out.println("image deleted " + post);
+            post.setImagePublicId(null);
+            post.setMedia(null);
+        } else {
+            System.out.println("image does not deleted " + post);
+        }
+
+        postDAO.save(post);
+    }
+
+    public Post updatePostMedia(MultipartFile file, UUID postId, User currentUser) throws IOException {
+        Post post = this.findById(postId);
+        User user = userService.findById(currentUser.getId());
+
+        // checks if the user trying to modify is one of his own posts or not
+        if(!post.getUser().equals(user)) {
+            throw new UnauthorizedException("User has no permission to edit this post: " + postId);
+        }
+
+        // overrider existing file with a new file
+        String oldPublicId = post.getImagePublicId();
+        String updatedImage =  cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", oldPublicId)).get("url").toString();
+
+        post.setEdited(true);
+        post.setMedia(updatedImage);
+
+        return postDAO.save(post);
+
     }
 }

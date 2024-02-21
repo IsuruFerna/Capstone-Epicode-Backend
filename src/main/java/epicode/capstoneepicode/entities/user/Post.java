@@ -24,8 +24,9 @@ public class Post {
     private String media;
     private LocalDateTime timeStamp;
     private Boolean edited;
+    private String imagePublicId;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private User user;
 }

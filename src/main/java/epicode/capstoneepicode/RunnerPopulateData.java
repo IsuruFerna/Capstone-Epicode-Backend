@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class RunnerPopulateData implements CommandLineRunner {
 
@@ -19,6 +21,8 @@ public class RunnerPopulateData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         Faker faker = new Faker();
+
+//        postService.deleteMedia(UUID.fromString("0fcffee8-a1ad-4caf-8497-abc3676ea77e"));
 
         // creates users
 //        for(int i = 0; i < 10; i++) {
