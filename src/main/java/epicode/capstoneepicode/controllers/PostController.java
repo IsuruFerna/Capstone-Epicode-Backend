@@ -123,7 +123,15 @@ public class PostController {
         }
     }
 
+    @DeleteMapping("media/{postId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePostMedia(@AuthenticationPrincipal User currentUser,
+                           @PathVariable UUID postId) throws IOException {
+            postService.deleteMedia(currentUser, postId);
+    }
+
     @DeleteMapping("/{postId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(@AuthenticationPrincipal User currentUser,
                            @PathVariable UUID postId) throws IOException {
             postService.findByIdAndDelete(currentUser, postId);

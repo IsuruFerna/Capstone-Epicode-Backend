@@ -136,9 +136,13 @@ public class PostService {
         return  postDAO.save(post);
     }
 
-    public Post deleteMedia(User user, UUID postId) throws IOException {
+    public void deleteMedia(User user, UUID postId) throws IOException {
         Post post = this.findById(postId);
         User u = userService.findById(user.getId());
+
+        if(!post.getUser().equals(u)) {
+            throw new UnauthorizedException("User has no permission to edit this post: " + postId);
+        }
 
         // delete the image
         Map destroyResult = cloudinaryUploader.uploader().destroy(post.getImagePublicId(), ObjectUtils.emptyMap());
@@ -147,12 +151,11 @@ public class PostService {
             System.out.println("image deleted " + post);
             post.setImagePublicId(null);
             post.setMedia(null);
-
         } else {
             System.out.println("image does not deleted " + post);
         }
 
-        return postDAO.save(post);
+        postDAO.save(post);
     }
 
     public Post updatePostMedia(MultipartFile file, UUID postId, User currentUser) throws IOException {
