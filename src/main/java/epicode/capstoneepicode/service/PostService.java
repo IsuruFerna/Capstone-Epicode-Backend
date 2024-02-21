@@ -7,6 +7,7 @@ import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
 import epicode.capstoneepicode.exceptions.UnauthorizedException;
+import epicode.capstoneepicode.payload.post.NewMediaResponse;
 import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.payload.post.ResponsePostDTO;
 import epicode.capstoneepicode.repository.PostDAO;
@@ -48,7 +49,6 @@ public class PostService {
         if(body.postId() != null) {
             post = this.findById(body.postId());
 
-            System.out.println("found the media");
         } else {
             post = new Post();
             post.setUser(u);
@@ -104,7 +104,9 @@ public class PostService {
             throw new UnauthorizedException("User has no permission to edit this post: " + id);
         }
 
-        found.setMedia(body.media());
+        if (!body.media().isEmpty()) {
+            found.setMedia(body.media());
+        }
         found.setContent(body.content());
         found.setEdited(true);
         return postDAO.save(found);
@@ -151,5 +153,25 @@ public class PostService {
         }
 
         return postDAO.save(post);
+    }
+
+    public Post updatePostMedia(MultipartFile file, UUID postId, User currentUser) throws IOException {
+        Post post = this.findById(postId);
+        User user = userService.findById(currentUser.getId());
+
+        // checks if the user trying to modify is one of his own posts or not
+        if(!post.getUser().equals(user)) {
+            throw new UnauthorizedException("User has no permission to edit this post: " + postId);
+        }
+
+        // overrider existing file with a new file
+        String oldPublicId = post.getImagePublicId();
+        String updatedImage =  cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", oldPublicId)).get("url").toString();
+
+        post.setEdited(true);
+        post.setMedia(updatedImage);
+
+        return postDAO.save(post);
+
     }
 }

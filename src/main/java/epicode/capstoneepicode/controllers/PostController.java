@@ -2,6 +2,7 @@ package epicode.capstoneepicode.controllers;
 
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import epicode.capstoneepicode.entities.user.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -70,6 +72,17 @@ public class PostController {
         }
     }
 
+    @PatchMapping("/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Post updatePost(
+            @AuthenticationPrincipal User currentUser,
+            @RequestBody PostDTO payload,
+            @PathVariable UUID postId
+    ) throws IOException {
+
+        return  postService.findByIdAndUpdate(currentUser, postId, payload);
+    }
+
     @PostMapping("/media")
     @ResponseStatus(HttpStatus.CREATED)
     public NewMediaResponse postMedia(@AuthenticationPrincipal User currentUser,
@@ -83,8 +96,17 @@ public class PostController {
         }
     }
 
+    @PatchMapping("/media/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    public NewMediaResponse updatePostMedia(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam("media") MultipartFile file,
+            @PathVariable UUID postId
+    ) throws IOException {
 
-
+        Post updated = postService.updatePostMedia(file, postId, currentUser);
+        return new NewMediaResponse(updated.getMedia(), updated.getId());
+    }
 
     // ************ user can handle his own posts ***************
     @PutMapping("/{postId}")
@@ -107,10 +129,6 @@ public class PostController {
             postService.findByIdAndDelete(currentUser, postId);
     }
 
-    @PatchMapping("/{postId}")
-    public Post deleteMedia(@AuthenticationPrincipal User currentUser, @PathVariable UUID postId) throws IOException {
-       return postService.deleteMedia(currentUser, postId);
-    }
 
 
 
