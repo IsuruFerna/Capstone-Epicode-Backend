@@ -1,11 +1,15 @@
 package epicode.capstoneepicode.controllers;
 
+import epicode.capstoneepicode.entities.user.FollowingFollower;
 import epicode.capstoneepicode.entities.user.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
+import epicode.capstoneepicode.exceptions.NotFoundException;
 import epicode.capstoneepicode.payload.user.NewUserResponseDTO;
 import epicode.capstoneepicode.payload.user.UpdateUserDTO;
+import epicode.capstoneepicode.payload.user.UserResponse;
 import epicode.capstoneepicode.repository.UserDAO;
+import epicode.capstoneepicode.service.FollowingFollowerService;
 import epicode.capstoneepicode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -30,6 +35,9 @@ public class UserController {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private FollowingFollowerService followingFollowerService;
+
     // re-consider(which is not relevant) for ADMIN
     @GetMapping("")
     public Page<User> getUsers(@RequestParam(defaultValue = "0") int page,
@@ -40,8 +48,34 @@ public class UserController {
     }
 
     @GetMapping("/user/{username}")
-    public User getUser(@PathVariable String username) {
-        return userService.findByUsername(username);
+    public UserResponse getUser(
+            @PathVariable String username,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        User loggedUser = userService.findById(currentUser.getId());
+        User otherUser = userService.findByUsername(username);
+
+        FollowingFollower otherUserData;
+        try {
+            otherUserData = followingFollowerService.findByUser(otherUser);
+        } catch (NotFoundException ex) {
+            otherUserData = new FollowingFollower();
+            otherUserData.setUser(otherUser);
+            otherUserData.setFollowing(Collections.emptySet());
+            otherUserData.setFollowers(Collections.emptySet());
+        }
+        return new UserResponse(
+                otherUser.getId(),
+                otherUser.getFirstName(),
+                otherUser.getLastName(),
+                otherUser.getProfilePicture(),
+                otherUser.getRole().toString(),
+                otherUser.getUsername(),
+                otherUser.getPostList().size(),
+                otherUserData.getFollowing().size(),
+                otherUserData.getFollowers().size(),
+                otherUserData.getFollowers().contains(loggedUser)
+        );
     }
 
     // to search users
