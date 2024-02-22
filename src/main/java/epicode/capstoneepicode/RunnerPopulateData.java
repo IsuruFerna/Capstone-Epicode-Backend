@@ -1,6 +1,8 @@
 package epicode.capstoneepicode;
 
 import com.github.javafaker.Faker;
+import epicode.capstoneepicode.entities.user.User;
+import epicode.capstoneepicode.payload.user.NewUserDTO;
 import epicode.capstoneepicode.service.AuthService;
 import epicode.capstoneepicode.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +36,9 @@ public class RunnerPopulateData implements CommandLineRunner {
 //                    "1999-09-10",
 //                    "1234",
 //                    "1234"
-//                    );
+//            );
 //            User saved = authService.save(u);
+
 //
 //            // creates random posts for random users
 ////            Random rnd = new Random();
