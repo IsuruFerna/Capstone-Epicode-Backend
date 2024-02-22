@@ -13,7 +13,7 @@ public record UserResponse(
         String role,
         String username,
         Integer postAmount,
-        Integer followings,
+        Integer following,
         Integer followers,
         Boolean isFollowing
 ) {

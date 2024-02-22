@@ -11,7 +11,7 @@ public record LoggedUserResponse(
         String role,
         String username,
         Integer postAmount,
-        Integer followings,
+        Integer following,
         Integer followers,
         LocalDate birthDay,
         String email
