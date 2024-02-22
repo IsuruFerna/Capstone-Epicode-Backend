@@ -5,6 +5,7 @@ import epicode.capstoneepicode.entities.user.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
+import epicode.capstoneepicode.payload.user.LoggedUserResponse;
 import epicode.capstoneepicode.payload.user.NewUserResponseDTO;
 import epicode.capstoneepicode.payload.user.UpdateUserDTO;
 import epicode.capstoneepicode.payload.user.UserResponse;
@@ -55,14 +56,14 @@ public class UserController {
         User loggedUser = userService.findById(currentUser.getId());
         User otherUser = userService.findByUsername(username);
 
+        // if there's no FollowingFollower instance fot the user we are looking,
+        // creates a new instance
         FollowingFollower otherUserData;
         try {
             otherUserData = followingFollowerService.findByUser(otherUser);
         } catch (NotFoundException ex) {
             otherUserData = new FollowingFollower();
             otherUserData.setUser(otherUser);
-            otherUserData.setFollowing(Collections.emptySet());
-            otherUserData.setFollowers(Collections.emptySet());
         }
         return new UserResponse(
                 otherUser.getId(),
@@ -100,10 +101,33 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public User getProfile(@AuthenticationPrincipal User currentUser)
+    public LoggedUserResponse getProfile(@AuthenticationPrincipal User currentUser)
     {
         User user = userService.findById(currentUser.getId());
-        return currentUser;
+
+        // if there's no FollowingFollower instance fot the user we are looking,
+        // creates a new instance
+        FollowingFollower userData;
+        try {
+            userData = followingFollowerService.findByUser(user);
+        } catch (NotFoundException ex) {
+            userData = new FollowingFollower();
+            userData.setUser(user);
+        }
+
+        return new LoggedUserResponse(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getProfilePicture(),
+                user.getRole().toString(),
+                user.getUsername(),
+                user.getPostList().size(),
+                userData.getFollowing().size(),
+                userData.getFollowers().size(),
+                user.getBirthDay(),
+                user.getEmail()
+        );
     }
 
 

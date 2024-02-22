@@ -10,6 +10,7 @@ import epicode.capstoneepicode.repository.FollowingFollowerDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -39,26 +40,35 @@ public class FollowingFollowerService {
         }
 
         // sets current user following list
-        FollowingFollower currentUserData = this.findByUser(currntUser);
-
-        if(!loggedUser.equals(currentUserData.getUser())) {
-            throw new UnauthorizedException("User have no permission to follow/unfollow action");
+        // if there's no any instance(happens at the first time), create one
+        FollowingFollower currentUserData;
+        try {
+            currentUserData = this.findByUser(currntUser);
+        } catch (NotFoundException ex) {
+            currentUserData = new FollowingFollower();
+            currentUserData.setUser(currntUser);
         }
 
-        currentUserData.addToFollowing(userToFollow);
         Boolean isFollowing = currentUserData.addToFollowing(userToFollow);
 
+
         // sets to follow user's followers list
-        FollowingFollower useToFollowData = this.findByUser(userToFollow);
-        useToFollowData.addToFollowers(loggedUser);
+        FollowingFollower userToFollowData;
+        try {
+            userToFollowData = this.findByUser(userToFollow);
+        } catch (NotFoundException ex) {
+            userToFollowData = new FollowingFollower();
+            userToFollowData.setUser(userToFollow);
+        }
+        userToFollowData.addToFollowers(loggedUser);
 
         // saves into current user following and toFollow user's followers lists
         followingFollowerDAO.save(currentUserData);
-        followingFollowerDAO.save(useToFollowData);
+        followingFollowerDAO.save(userToFollowData);
 
         return new FollowUnfollowResponse(
                 isFollowing,
-                useToFollowData.getFollowing().size(),
-                useToFollowData.getFollowers().size());
+                userToFollowData.getFollowing().size(),
+                userToFollowData.getFollowers().size());
     }
 }
