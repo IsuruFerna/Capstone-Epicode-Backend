@@ -6,15 +6,16 @@ import org.springframework.validation.ObjectError;
 import java.util.List;
 
 @Getter
-public class BadRequestException extends RuntimeException{
-    private List<ObjectError> errorList;
+public class BadRequestException extends RuntimeException {
+    private List<ObjectError> errorsList;
 
     public BadRequestException(String message) {
         super(message);
     }
 
-    public BadRequestException(List<ObjectError> errorList) {
+
+    public BadRequestException(List<ObjectError> errorsList) {
         super("Errors in body");
-        this.errorList = errorList;
+        this.errorsList = errorsList;
     }
 }
