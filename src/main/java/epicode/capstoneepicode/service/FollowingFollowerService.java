@@ -4,13 +4,11 @@ import epicode.capstoneepicode.entities.user.FollowingFollower;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
-import epicode.capstoneepicode.exceptions.UnauthorizedException;
 import epicode.capstoneepicode.payload.followingFollower.FollowUnfollowResponse;
 import epicode.capstoneepicode.repository.FollowingFollowerDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.UUID;
 
 @Service
