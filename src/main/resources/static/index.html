@@ -6,6 +6,14 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
    <script type="text/javascript">
       var stompClient = null;
+      var headerName = "${_csrf.headerName}";
+      var token = "${_csrf.token}";
+
+      var headers = {};
+      headers[headerName] = token;
+      var jwt = "TOKEN";
+      headers['Authorization'] = 'Bearer ' + jwt;
+
 
       function setConnected(connected) {
           document.getElementById('connect').disabled = connected;
