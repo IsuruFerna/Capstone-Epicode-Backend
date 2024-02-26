@@ -6,9 +6,12 @@ import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
 import epicode.capstoneepicode.payload.followingFollower.FollowUnfollowResponse;
 import epicode.capstoneepicode.repository.FollowingFollowerDAO;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -20,12 +23,41 @@ public class FollowingFollowerService {
     @Autowired
     private UserService userService;
 
+//    public Set<User> userFollowers(UUID userId) {
+//        User user = userService.findById(userId);
+//        FollowingFollower followingFollower = this.findByUser(user);
+//        Set<User> followers = followingFollower.getFollowers();
+//        return followers;
+//    }
+//
+//    public Set<User> userFollowing(UUID userId) {
+//        User user = userService.findById(userId);
+//        FollowingFollower followingFollower = this.findByUser(user);
+//        Set<User> following = followingFollower.getFollowing();
+//        return following;
+//    }
+
+    @Transactional
+    public List<User> userFollowsBack(UUID userId) {
+        User user = userService.findById(userId);
+        FollowingFollower followingFollower = this.findByUserId(userId);
+        List<User> followBackList = followingFollower.getFollowers().stream()
+                .filter(follower -> follower.getFollowingFollower().getFollowers().contains(user))
+                .toList();
+
+        return followBackList;
+    }
+
     public FollowingFollower findById(UUID id) {
         return followingFollowerDAO.findById(id).orElseThrow(()-> new NotFoundException(id));
     }
 
     public FollowingFollower findByUser(User user) {
         return followingFollowerDAO.findByUser(user).orElseThrow(()-> new NotFoundException(user.getId()));
+    }
+
+    public FollowingFollower findByUserId(UUID userId) {
+        return followingFollowerDAO.findByUserId(userId).orElseThrow(()-> new NotFoundException(userId));
     }
 
     public FollowUnfollowResponse followUnfollow(User currntUser, UUID userId) {

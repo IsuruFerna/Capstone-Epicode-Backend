@@ -40,12 +40,4 @@ public class ChatController {
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/private", message); // user/bob/private
         return message;
     }
-
-
-//    @MessageMapping("/hello")
-//    @SendTo("/topic/greetings")
-//    public Greeting greet(HelloMessage message) {
-//        return new Greeting("Hello," +
-//                HtmlUtils.htmlEscape(message.getName()));
-//    }
 }
