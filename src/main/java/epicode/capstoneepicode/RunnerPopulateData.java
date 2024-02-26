@@ -1,8 +1,12 @@
 package epicode.capstoneepicode;
 
 import com.github.javafaker.Faker;
+import epicode.capstoneepicode.entities.user.User;
+import epicode.capstoneepicode.payload.user.NewUserDTO;
 import epicode.capstoneepicode.service.AuthService;
+import epicode.capstoneepicode.service.FollowingFollowerService;
 import epicode.capstoneepicode.service.PostService;
+import epicode.capstoneepicode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -18,9 +22,17 @@ public class RunnerPopulateData implements CommandLineRunner {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private FollowingFollowerService followingFollowerService;
+
     @Override
     public void run(String... args) throws Exception {
         Faker faker = new Faker();
+
+
 
 //        postService.deleteMedia(UUID.fromString("0fcffee8-a1ad-4caf-8497-abc3676ea77e"));
 
@@ -34,8 +46,9 @@ public class RunnerPopulateData implements CommandLineRunner {
 //                    "1999-09-10",
 //                    "1234",
 //                    "1234"
-//                    );
+//            );
 //            User saved = authService.save(u);
+
 //
 //            // creates random posts for random users
 ////            Random rnd = new Random();
@@ -54,4 +67,6 @@ public class RunnerPopulateData implements CommandLineRunner {
 //
 //        }
     }
+
+
 }

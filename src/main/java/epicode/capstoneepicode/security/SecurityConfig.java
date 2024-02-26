@@ -34,10 +34,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests(request -> request.requestMatchers("/chat/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/**").permitAll());
 
         return httpSecurity.build();
     }
+
+
 
     @Bean
     PasswordEncoder getPWEncoder() {
@@ -50,6 +53,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true); // __
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -20,7 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({"password", "authorities", "accountNonExpired", "enabled", "accountNonLocked", "credentialNonLocked", "credentialsNonExpired", "postList"})
+@JsonIgnoreProperties({"password", "authorities", "accountNonExpired", "enabled", "accountNonLocked", "credentialNonLocked", "credentialsNonExpired", "postList", "followingFollower"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -37,6 +38,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post>postList;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private FollowingFollower followingFollower;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

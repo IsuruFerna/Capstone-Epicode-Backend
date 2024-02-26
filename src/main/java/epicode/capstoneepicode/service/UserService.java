@@ -1,6 +1,7 @@
 package epicode.capstoneepicode.service;
 
 
+import epicode.capstoneepicode.entities.user.FollowingFollower;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -27,6 +29,9 @@ public class UserService {
 
     @Autowired
     private UserDAO userDAO;
+
+
+
 
     public User findById(UUID id) {
         return userDAO.findById(id).orElseThrow(()-> new NotFoundException(id));
