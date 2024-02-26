@@ -57,7 +57,6 @@ public class FollowingFollowerService {
 
         Boolean isFollowing = currentUserData.addToFollowing(userToFollow);
 
-
         // sets to follow user's followers list
         FollowingFollower userToFollowData;
         try {
@@ -92,6 +91,7 @@ public class FollowingFollowerService {
 //        return following;
 //    }
 
+    // gets logged user's follow back list
     public List<User> userFollowsBack(User currentUser) {
         User user = userService.findById(currentUser.getId());
 
