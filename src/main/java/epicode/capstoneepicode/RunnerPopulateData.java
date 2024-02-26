@@ -32,7 +32,7 @@ public class RunnerPopulateData implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Faker faker = new Faker();
 
-        followingFollowerService.userFollowsBack(UUID.fromString("ec681891-5522-44f4-b2e3-2ec9a07020f1"));
+
 
 //        postService.deleteMedia(UUID.fromString("0fcffee8-a1ad-4caf-8497-abc3676ea77e"));
 

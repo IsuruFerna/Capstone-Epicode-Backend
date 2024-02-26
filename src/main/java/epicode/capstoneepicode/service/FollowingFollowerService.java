@@ -4,6 +4,7 @@ import epicode.capstoneepicode.entities.user.FollowingFollower;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
+import epicode.capstoneepicode.exceptions.UnauthorizedException;
 import epicode.capstoneepicode.payload.followingFollower.FollowUnfollowResponse;
 import epicode.capstoneepicode.repository.FollowingFollowerDAO;
 import jakarta.transaction.Transactional;
@@ -22,31 +23,6 @@ public class FollowingFollowerService {
 
     @Autowired
     private UserService userService;
-
-//    public Set<User> userFollowers(UUID userId) {
-//        User user = userService.findById(userId);
-//        FollowingFollower followingFollower = this.findByUser(user);
-//        Set<User> followers = followingFollower.getFollowers();
-//        return followers;
-//    }
-//
-//    public Set<User> userFollowing(UUID userId) {
-//        User user = userService.findById(userId);
-//        FollowingFollower followingFollower = this.findByUser(user);
-//        Set<User> following = followingFollower.getFollowing();
-//        return following;
-//    }
-
-    @Transactional
-    public List<User> userFollowsBack(UUID userId) {
-        User user = userService.findById(userId);
-        FollowingFollower followingFollower = this.findByUserId(userId);
-        List<User> followBackList = followingFollower.getFollowers().stream()
-                .filter(follower -> follower.getFollowingFollower().getFollowers().contains(user))
-                .toList();
-
-        return followBackList;
-    }
 
     public FollowingFollower findById(UUID id) {
         return followingFollowerDAO.findById(id).orElseThrow(()-> new NotFoundException(id));
@@ -100,5 +76,30 @@ public class FollowingFollowerService {
                 isFollowing,
                 userToFollowData.getFollowing().size(),
                 userToFollowData.getFollowers().size());
+    }
+
+    //    public Set<User> userFollowers(UUID userId) {
+//        User user = userService.findById(userId);
+//        FollowingFollower followingFollower = this.findByUser(user);
+//        Set<User> followers = followingFollower.getFollowers();
+//        return followers;
+//    }
+//
+//    public Set<User> userFollowing(UUID userId) {
+//        User user = userService.findById(userId);
+//        FollowingFollower followingFollower = this.findByUser(user);
+//        Set<User> following = followingFollower.getFollowing();
+//        return following;
+//    }
+
+    public List<User> userFollowsBack(User currentUser) {
+        User user = userService.findById(currentUser.getId());
+
+        FollowingFollower followingFollower = this.findByUser(user);
+        List<User> followBackList = followingFollower.getFollowers().stream()
+                .filter(follower -> follower.getFollowingFollower().getFollowers().contains(user))
+                .toList();
+
+        return followBackList;
     }
 }
