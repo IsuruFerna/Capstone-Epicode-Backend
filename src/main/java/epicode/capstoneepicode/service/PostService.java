@@ -64,22 +64,25 @@ public class PostService {
         return postDAO.findById(id).orElseThrow(()-> new NotFoundException(id));
     }
 
-    public Page<ResponsePostDTO> findALl(Pageable pageable) {
-        Page<Post> pagePosts = postDAO.findAll(pageable);
-        List<ResponsePostDTO> posts = pagePosts.stream().map(post ->
-         new ResponsePostDTO(
-                    post.getId(),
-                    post.getContent(),
-                    post.getMedia(),
-                    post.getTimeStamp(),
-                    post.getEdited(),
-                    post.getUser().getUsername(),
-                    post.getUser().getFirstName(),
-                    post.getUser().getLastName()
-            )
-        ).toList();
+    // format each post data
+    private ResponsePostDTO createResponsePostDTO(Post post, User user) {
+        Boolean isLiked = post.getLike().getUsers().contains(user);
+        return new ResponsePostDTO(
+                post.getId(),
+                post.getContent(),
+                post.getMedia(),
+                post.getTimeStamp(),
+                post.getEdited(),
+                post.getUser().getUsername(),
+                post.getUser().getFirstName(),
+                post.getUser().getLastName(),
+                isLiked
+        );
+    }
 
-        return new PageImpl<>(posts, pageable, pagePosts.getTotalElements());
+    public Page<ResponsePostDTO> findALl(User currentUser, Pageable pageable) {
+        User user = userService.findById(currentUser.getId());
+        return postDAO.findAll(pageable).map(post -> createResponsePostDTO(post, user));
     }
 
     public void findByIdAndDelete(User user, UUID id) {

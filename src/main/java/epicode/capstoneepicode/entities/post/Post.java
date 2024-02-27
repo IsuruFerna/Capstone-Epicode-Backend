@@ -1,7 +1,6 @@
 package epicode.capstoneepicode.entities.post;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import epicode.capstoneepicode.entities.post.Like;
 import epicode.capstoneepicode.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;

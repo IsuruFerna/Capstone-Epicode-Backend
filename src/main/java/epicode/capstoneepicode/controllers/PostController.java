@@ -42,9 +42,12 @@ public class PostController {
 
     // this is for the home page
     @GetMapping("")
-    public Page<ResponsePostDTO> getPosts(@RequestParam(defaultValue = "0") int page) {
+    public Page<ResponsePostDTO> getPosts(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam(defaultValue = "0") int page
+    ) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("timeStamp").descending());
-        return postService.findALl(pageable);
+        return postService.findALl(currentUser, pageable);
     }
 
     // get posts by username
