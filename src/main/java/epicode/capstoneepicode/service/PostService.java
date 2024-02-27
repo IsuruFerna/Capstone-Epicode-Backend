@@ -66,7 +66,14 @@ public class PostService {
 
     // format each post data
     private ResponsePostDTO createResponsePostDTO(Post post, User user) {
-        Boolean isLiked = post.getLike().getUsers().contains(user);
+        Boolean isLiked;
+
+        try {
+            isLiked = post.getLike().getUsers().contains(user);
+        } catch (NullPointerException ex) {
+            isLiked = false;
+        }
+
         return new ResponsePostDTO(
                 post.getId(),
                 post.getContent(),

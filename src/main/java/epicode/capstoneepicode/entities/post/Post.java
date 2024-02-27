@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -26,6 +28,7 @@ public class Post {
     private Boolean edited;
     private String imagePublicId;
     private int likeCount;
+    private int commentsCount;
 
     @JsonIgnore
     @ManyToOne
@@ -33,4 +36,7 @@ public class Post {
 
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
     private Like like;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 }
