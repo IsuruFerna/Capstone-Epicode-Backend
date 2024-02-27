@@ -26,6 +26,7 @@ public class Post {
     private LocalDateTime timeStamp;
     private Boolean edited;
     private String imagePublicId;
+    private int likeCount;
 
     @JsonIgnore
     @ManyToOne

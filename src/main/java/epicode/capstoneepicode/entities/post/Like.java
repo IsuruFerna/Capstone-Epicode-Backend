@@ -30,4 +30,14 @@ public class Like {
             inverseJoinColumns = @JoinColumn(name = "liked_user_id")
     )
     private Set<User> users = new HashSet<>();
+
+    public Boolean addLike(User user) {
+        if(!this.users.contains(user)) {
+            this.users.add(user);
+            return true;
+        } else {
+            this.users.remove(user);
+            return false;
+        }
+    }
 }
