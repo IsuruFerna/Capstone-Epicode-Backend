@@ -2,12 +2,11 @@ package epicode.capstoneepicode.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import epicode.capstoneepicode.entities.user.Post;
+import epicode.capstoneepicode.entities.post.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
 import epicode.capstoneepicode.exceptions.UnauthorizedException;
-import epicode.capstoneepicode.payload.post.NewMediaResponse;
 import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.payload.post.ResponsePostDTO;
 import epicode.capstoneepicode.repository.PostDAO;
@@ -65,22 +64,25 @@ public class PostService {
         return postDAO.findById(id).orElseThrow(()-> new NotFoundException(id));
     }
 
-    public Page<ResponsePostDTO> findALl(Pageable pageable) {
-        Page<Post> pagePosts = postDAO.findAll(pageable);
-        List<ResponsePostDTO> posts = pagePosts.stream().map(post ->
-         new ResponsePostDTO(
-                    post.getId(),
-                    post.getContent(),
-                    post.getMedia(),
-                    post.getTimeStamp(),
-                    post.getEdited(),
-                    post.getUser().getUsername(),
-                    post.getUser().getFirstName(),
-                    post.getUser().getLastName()
-            )
-        ).toList();
+    // format each post data
+    private ResponsePostDTO createResponsePostDTO(Post post, User user) {
+        Boolean isLiked = post.getLike().getUsers().contains(user);
+        return new ResponsePostDTO(
+                post.getId(),
+                post.getContent(),
+                post.getMedia(),
+                post.getTimeStamp(),
+                post.getEdited(),
+                post.getUser().getUsername(),
+                post.getUser().getFirstName(),
+                post.getUser().getLastName(),
+                isLiked
+        );
+    }
 
-        return new PageImpl<>(posts, pageable, pagePosts.getTotalElements());
+    public Page<ResponsePostDTO> findALl(User currentUser, Pageable pageable) {
+        User user = userService.findById(currentUser.getId());
+        return postDAO.findAll(pageable).map(post -> createResponsePostDTO(post, user));
     }
 
     public void findByIdAndDelete(User user, UUID id) {

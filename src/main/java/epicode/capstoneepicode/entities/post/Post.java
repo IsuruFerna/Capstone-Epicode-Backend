@@ -1,10 +1,10 @@
-package epicode.capstoneepicode.entities.user;
+package epicode.capstoneepicode.entities.post;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import epicode.capstoneepicode.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,8 +25,12 @@ public class Post {
     private LocalDateTime timeStamp;
     private Boolean edited;
     private String imagePublicId;
+    private int likeCount;
 
     @JsonIgnore
     @ManyToOne
     private User user;
+
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private Like like;
 }

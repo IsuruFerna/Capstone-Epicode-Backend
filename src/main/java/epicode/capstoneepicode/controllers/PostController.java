@@ -2,8 +2,7 @@ package epicode.capstoneepicode.controllers;
 
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import epicode.capstoneepicode.entities.user.Post;
+import epicode.capstoneepicode.entities.post.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.payload.post.NewMediaResponse;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -44,9 +42,12 @@ public class PostController {
 
     // this is for the home page
     @GetMapping("")
-    public Page<ResponsePostDTO> getPosts(@RequestParam(defaultValue = "0") int page) {
+    public Page<ResponsePostDTO> getPosts(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam(defaultValue = "0") int page
+    ) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("timeStamp").descending());
-        return postService.findALl(pageable);
+        return postService.findALl(currentUser, pageable);
     }
 
     // get posts by username

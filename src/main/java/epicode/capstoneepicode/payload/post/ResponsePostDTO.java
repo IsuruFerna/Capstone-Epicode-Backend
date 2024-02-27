@@ -11,6 +11,7 @@ public record ResponsePostDTO(
         Boolean edited,
         String username,
         String firstName,
-        String lastName
+        String lastName,
+        Boolean isLiked
 ) {
 }
