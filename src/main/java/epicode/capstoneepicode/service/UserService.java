@@ -1,27 +1,17 @@
 package epicode.capstoneepicode.service;
 
 
-import epicode.capstoneepicode.entities.user.FollowingFollower;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
-import epicode.capstoneepicode.payload.user.NewUserDTO;
-import epicode.capstoneepicode.payload.user.NewUserResponseDTO;
 import epicode.capstoneepicode.payload.user.UpdateUserDTO;
 import epicode.capstoneepicode.repository.UserDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Service

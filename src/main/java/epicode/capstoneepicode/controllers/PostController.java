@@ -2,8 +2,7 @@ package epicode.capstoneepicode.controllers;
 
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import epicode.capstoneepicode.entities.user.Post;
+import epicode.capstoneepicode.entities.post.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.payload.post.NewMediaResponse;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
 @RestController

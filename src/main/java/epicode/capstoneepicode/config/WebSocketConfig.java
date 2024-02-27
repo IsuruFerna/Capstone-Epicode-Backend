@@ -75,7 +75,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                     if(authHeader == null || !authHeader.startsWith("Bearer ")) {
                         log.error("no token");
-                        throw new UnauthorizedException("Please add the token in Authorization header");
+//                        throw new UnauthorizedException("Please add the token in Authorization header");
                     } else {
                         try {
 //                            assert authHeader != null;
@@ -90,7 +90,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                             accessor.setUser(authentication);
                         } catch (Exception ex) {
                             log.error("Authentication error: {}", ex.getMessage());
-                            throw new UnauthorizedException("Please insert a valid token!");
+//                            throw new UnauthorizedException("Please insert a valid token!");
                         }
 
                     }

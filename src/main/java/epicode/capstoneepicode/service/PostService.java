@@ -2,12 +2,11 @@ package epicode.capstoneepicode.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import epicode.capstoneepicode.entities.user.Post;
+import epicode.capstoneepicode.entities.post.Post;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.BadRequestException;
 import epicode.capstoneepicode.exceptions.NotFoundException;
 import epicode.capstoneepicode.exceptions.UnauthorizedException;
-import epicode.capstoneepicode.payload.post.NewMediaResponse;
 import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.payload.post.ResponsePostDTO;
 import epicode.capstoneepicode.repository.PostDAO;

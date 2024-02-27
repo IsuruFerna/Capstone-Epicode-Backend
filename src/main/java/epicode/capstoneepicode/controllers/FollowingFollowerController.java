@@ -1,6 +1,5 @@
 package epicode.capstoneepicode.controllers;
 
-import epicode.capstoneepicode.entities.user.FollowingFollower;
 import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.payload.followingFollower.FollowUnfollowResponse;
 import epicode.capstoneepicode.service.FollowingFollowerService;
