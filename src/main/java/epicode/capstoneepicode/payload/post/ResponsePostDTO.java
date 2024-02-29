@@ -12,6 +12,7 @@ public record ResponsePostDTO(
         String username,
         String firstName,
         String lastName,
-        Boolean isLiked
+        Boolean isLiked,
+        int likeCount
 ) {
 }

@@ -34,9 +34,11 @@ public class Post {
     @ManyToOne
     private User user;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
     private Like like;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 }
