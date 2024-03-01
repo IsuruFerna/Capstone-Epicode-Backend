@@ -52,9 +52,11 @@ public class PostController {
 
     // get posts by username
     @GetMapping("/{username}")
-    public Page<Post> userPosts(@PathVariable String username, @RequestParam(defaultValue = "0") int page) {
+    public Page<ResponsePostDTO> userPosts(@AuthenticationPrincipal User currentUser,
+                                @PathVariable String username,
+                                @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("timeStamp").descending());
-        return postDAO.findPostsByUserid(username, pageable);
+        return postService.findPostsByUsername(currentUser, username, pageable);
     }
 
     @PostMapping("")
@@ -80,7 +82,6 @@ public class PostController {
             @RequestBody PostDTO payload,
             @PathVariable UUID postId
     ) throws IOException {
-
         return  postService.findByIdAndUpdate(currentUser, postId, payload);
     }
 

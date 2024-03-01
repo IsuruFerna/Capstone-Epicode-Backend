@@ -66,7 +66,16 @@ public class PostService {
 
     // format each post data
     private ResponsePostDTO createResponsePostDTO(Post post, User user) {
-        Boolean isLiked = post.getLike().getUsers().contains(user);
+        Boolean isLiked;
+
+        try {
+            isLiked = post.getLike().getUsers().contains(user);
+        } catch (NullPointerException ex) {
+            isLiked = false;
+        }
+
+
+
         return new ResponsePostDTO(
                 post.getId(),
                 post.getContent(),
@@ -76,13 +85,19 @@ public class PostService {
                 post.getUser().getUsername(),
                 post.getUser().getFirstName(),
                 post.getUser().getLastName(),
-                isLiked
+                isLiked,
+                post.getLikeCount()
         );
     }
 
     public Page<ResponsePostDTO> findALl(User currentUser, Pageable pageable) {
         User user = userService.findById(currentUser.getId());
         return postDAO.findAll(pageable).map(post -> createResponsePostDTO(post, user));
+    }
+
+    public Page<ResponsePostDTO> findPostsByUsername(User currentUser, String username, Pageable pageable) {
+        User user = userService.findById(currentUser.getId());
+        return postDAO.findPostsByUsername(username, pageable).map(post -> createResponsePostDTO(post, user));
     }
 
     public void findByIdAndDelete(User user, UUID id) {

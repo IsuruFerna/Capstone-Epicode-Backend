@@ -3,16 +3,12 @@ package epicode.capstoneepicode.payload.post;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record ResponsePostDTO(
+public record CommentResponse(
         UUID id,
-        String content,
-        String media,
+        String comment,
         LocalDateTime timeStamp,
-        Boolean edited,
-        String username,
         String firstName,
         String lastName,
-        Boolean isLiked,
-        int likeCount
+        String username
 ) {
 }

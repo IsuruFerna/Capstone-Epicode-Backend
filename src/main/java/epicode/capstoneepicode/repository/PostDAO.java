@@ -13,5 +13,5 @@ public interface PostDAO extends JpaRepository<Post, UUID> {
 //    Page<Post> findByUser(User user, Pageable pageable);
 
     @Query("SELECT p FROM Post p Join p.user u WHERE u.username = :username")
-    Page<Post> findPostsByUserid(@Param("username") String username, Pageable pageable);
+    Page<Post> findPostsByUsername(@Param("username") String username, Pageable pageable);
 }
