@@ -82,7 +82,6 @@ public class PostController {
             @RequestBody PostDTO payload,
             @PathVariable UUID postId
     ) throws IOException {
-
         return  postService.findByIdAndUpdate(currentUser, postId, payload);
     }
 

@@ -43,14 +43,15 @@ public class CommentController {
                     comment.getComment(),
                     comment.getTimeStamp(),
                     comment.getUser().getFirstName(),
-                    comment.getUser().getLastName()
-                    )
+                    comment.getUser().getLastName(),
+                     comment.getUser().getUsername()
+             )
         ).toList();
     }
 
     @PostMapping("/{postId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Comment addComment(
+    public CommentResponse addComment(
             @AuthenticationPrincipal User currentUser,
             @PathVariable UUID postId,
             @RequestBody @Validated NewCommentDAO payload,
@@ -59,7 +60,15 @@ public class CommentController {
             System.out.println(validation.getAllErrors());
             throw new BadRequestException("There are Errors in payload");
         } else {
-            return commentService.save(currentUser, postId, payload);
+            Comment saved = commentService.save(currentUser, postId, payload);
+            return new CommentResponse(
+                    saved.getId(),
+                    saved.getComment(),
+                    saved.getTimeStamp(),
+                    saved.getUser().getFirstName(),
+                    saved.getUser().getLastName(),
+                    saved.getUser().getUsername()
+            );
         }
     }
 

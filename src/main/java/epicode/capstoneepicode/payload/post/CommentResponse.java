@@ -8,6 +8,7 @@ public record CommentResponse(
         String comment,
         LocalDateTime timeStamp,
         String firstName,
-        String lastName
+        String lastName,
+        String username
 ) {
 }
