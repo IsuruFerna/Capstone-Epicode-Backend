@@ -26,6 +26,7 @@ public class Comment {
     @Column(columnDefinition = "text", length = 800)
     private String comment;
     private LocalDateTime timeStamp;
+    private Boolean edited = false;
 
     @JsonIgnore
     @ManyToOne

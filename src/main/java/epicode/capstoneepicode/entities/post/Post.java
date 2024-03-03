@@ -30,6 +30,7 @@ public class Post {
     private int likeCount;
     private int commentsCount;
 
+
     @JsonIgnore
     @ManyToOne
     private User user;

@@ -9,6 +9,7 @@ public record CommentResponse(
         LocalDateTime timeStamp,
         String firstName,
         String lastName,
-        String username
+        String username,
+        Boolean isEdited
 ) {
 }

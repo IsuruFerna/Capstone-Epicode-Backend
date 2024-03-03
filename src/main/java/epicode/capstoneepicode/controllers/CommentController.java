@@ -44,7 +44,8 @@ public class CommentController {
                     comment.getTimeStamp(),
                     comment.getUser().getFirstName(),
                     comment.getUser().getLastName(),
-                     comment.getUser().getUsername()
+                     comment.getUser().getUsername(),
+                     comment.getEdited()
              )
         ).toList();
     }
@@ -67,9 +68,35 @@ public class CommentController {
                     saved.getTimeStamp(),
                     saved.getUser().getFirstName(),
                     saved.getUser().getLastName(),
-                    saved.getUser().getUsername()
+                    saved.getUser().getUsername(),
+                    saved.getEdited()
             );
         }
+    }
+
+    @PatchMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommentResponse modifyComment(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID commentId,
+            @RequestBody @Validated NewCommentDAO payload, BindingResult validation)
+            throws IOException {
+        if(validation.hasErrors()) {
+            System.out.println(validation.getAllErrors());
+            throw new BadRequestException("There are Errors in payload");
+        }
+
+        Comment edited = commentService.updateComment(user, commentId, payload);
+        return new CommentResponse(
+                edited.getId(),
+                edited.getComment(),
+                edited.getTimeStamp(),
+                edited.getUser().getFirstName(),
+                edited.getUser().getLastName(),
+                edited.getUser().getUsername(),
+                edited.getEdited()
+        );
+
     }
 
     @DeleteMapping("/{commentId}")

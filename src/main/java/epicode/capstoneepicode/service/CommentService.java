@@ -6,6 +6,7 @@ import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.exceptions.NotFoundException;
 import epicode.capstoneepicode.exceptions.UnauthorizedException;
 import epicode.capstoneepicode.payload.post.NewCommentDAO;
+import epicode.capstoneepicode.payload.post.PostDTO;
 import epicode.capstoneepicode.repository.CommentDAO;
 import epicode.capstoneepicode.repository.PostDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +35,28 @@ public class CommentService {
     }
 
     public void deleteComment(User currentUser, UUID commentId) {
-        User user = userService.findById(currentUser.getId());
+        User loggedUser = userService.findById(currentUser.getId());
         Comment comment = this.findById(commentId);
         Post post = comment.getPost();
 
-        if(!comment.getUser().equals(user) || !post.getUser().equals(user)) {
+        if(!comment.getUser().equals(loggedUser) && !post.getUser().equals(loggedUser)) {
             throw new UnauthorizedException("User have no permission to delete this comment!");
         }
         commentDAO.delete(comment);
+    }
+
+    public Comment updateComment(User user, UUID id, NewCommentDAO body) {
+        User u = userService.findById(user.getId());
+        Comment found = this.findById(id);
+
+        // checks if the user trying to modify is one of his own posts or not
+        if(!found.getUser().equals(u)) {
+            throw new UnauthorizedException("User has no permission to edit this post: " + id);
+        }
+
+        found.setComment(body.comment());
+        found.setEdited(true);
+        return commentDAO.save(found);
     }
 
     public Comment save(User currentUser, UUID postId, NewCommentDAO body) {
