@@ -34,7 +34,6 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .authorizeHttpRequests(request -> request.requestMatchers("/chat/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/**").permitAll());
 
         return httpSecurity.build();
