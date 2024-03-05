@@ -49,6 +49,15 @@ Finally, you need to build and run the project. 🚀
 
 **Note**: The CORS origin for both REST API and websockets are set to `http://localhost:3000`, which is the default port for the React development server. This means that your back-end server will only accept requests from your front-end application running on `http://localhost:3000`, and reject any other requests from different origins. 🚫
 
+## REST API Docs 📄
+
+This project provides a comprehensive documentation of the REST API requests and responses using **Swagger UI** and **OpenAPI**.
+
+- `http://your-server/swagger-ui/index.html`: This will show you a user-friendly interface where you can view and test the available endpoints, parameters, and responses. 🖥️
+- `http://your-server/v3/api-docs`: This will show you a JSON file that contains the specifications of the API according to the OpenAPI standard. 🗂️
+
+You can replace `your-server` with the actual server link of your back-end application, which you can get from your hosting service or your local machine. If you are running the back-end locally, you can use `http://localhost:8080` or whatever port you are using.
+
 # 🖊️ Author
 Isuru Madhushan Fernando Warnakulasuriya Mahalekamge
 
