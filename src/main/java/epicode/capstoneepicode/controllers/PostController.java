@@ -75,6 +75,7 @@ public class PostController {
         }
     }
 
+    // edit posts
     @PatchMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public Post updatePost(

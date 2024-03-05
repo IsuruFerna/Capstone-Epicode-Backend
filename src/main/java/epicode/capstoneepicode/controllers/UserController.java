@@ -34,7 +34,6 @@ public class UserController {
     @Autowired
     private FollowingFollowerService followingFollowerService;
 
-    // re-consider(which is not relevant) for ADMIN
     @GetMapping("")
     public Page<User> getUsers(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "10") int size,
@@ -51,7 +50,7 @@ public class UserController {
         User loggedUser = userService.findById(currentUser.getId());
         User otherUser = userService.findByUsername(username);
 
-        // if there's no FollowingFollower instance fot the user we are looking,
+        // if there's no FollowingFollower instance for the user we are looking,
         // creates a new instance
         FollowingFollower otherUserData;
         try {
@@ -74,7 +73,7 @@ public class UserController {
         );
     }
 
-    // to search users
+    // search any user
     @GetMapping("/{username}")
     public Page<User> getUsersByUsername(@PathVariable String username, @RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "10") int size,
