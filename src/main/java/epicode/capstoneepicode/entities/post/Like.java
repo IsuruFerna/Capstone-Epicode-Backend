@@ -29,15 +29,25 @@ public class Like {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "liked_user_id")
     )
-    private Set<User> users = new HashSet<>();
+    private Set<User> likedUsers = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "dislike_users",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "dislike_user_id")
+    )
+    private Set<User> dislikedUsers = new HashSet<>();
 
     public Boolean addLike(User user) {
-        if(!this.users.contains(user)) {
-            this.users.add(user);
+        if(!this.likedUsers.contains(user)) {
+            this.likedUsers.add(user);
             return true;
         } else {
-            this.users.remove(user);
+            this.likedUsers.remove(user);
             return false;
         }
     }
+
+
 }

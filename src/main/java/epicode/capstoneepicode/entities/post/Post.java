@@ -37,7 +37,7 @@ public class Post {
 
     @JsonIgnore
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-    private Like like;
+    private Like like = new Like();
 
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)

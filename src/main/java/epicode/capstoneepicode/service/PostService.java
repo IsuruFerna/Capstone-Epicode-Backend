@@ -69,12 +69,10 @@ public class PostService {
         Boolean isLiked;
 
         try {
-            isLiked = post.getLike().getUsers().contains(user);
+            isLiked = post.getLike().getLikedUsers().contains(user);
         } catch (NullPointerException ex) {
             isLiked = false;
         }
-
-
 
         return new ResponsePostDTO(
                 post.getId(),

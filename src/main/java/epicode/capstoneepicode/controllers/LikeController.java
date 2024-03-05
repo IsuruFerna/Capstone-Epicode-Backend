@@ -6,6 +6,7 @@ import epicode.capstoneepicode.entities.user.User;
 import epicode.capstoneepicode.payload.post.LikeResponse;
 import epicode.capstoneepicode.repository.LikeDAO;
 import epicode.capstoneepicode.repository.PostDAO;
+import epicode.capstoneepicode.service.LikeService;
 import epicode.capstoneepicode.service.PostService;
 import epicode.capstoneepicode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class LikeController {
     @Autowired
     private LikeDAO likeDAO;
 
+    @Autowired
+    private LikeService likeService;
+
 
     @PutMapping("/{postId}")
     public LikeResponse likePost(
@@ -43,17 +47,15 @@ public class LikeController {
         User user = userService.findById(currentUser.getId());
         Post post = postService.findById(postId);
 
-        Like newLike = new Like();
-        Boolean isLiked;
-
         // set new Like instance if there aren't
-        try {
-            isLiked = post.getLike().addLike(user);
-        } catch (NullPointerException ex) {
-            newLike.setPost(post);
-            post.setLike(newLike);
-            isLiked = post.getLike().addLike(user);
+        Like like = likeDAO.findByPost(post).orElse(null);
+        if(like == null) {
+            like = new Like();
+            like.setPost(post);
+            post.setLike(like);
         }
+
+        Boolean isLiked = like.addLike(user);
 
         // set like count on the post. it's good for performance in large scale in this way
         if (isLiked) {
@@ -62,7 +64,7 @@ public class LikeController {
             post.setLikeCount(post.getLikeCount() - 1);
         }
         postDAO.save(post);
-        likeDAO.save(newLike);
+        likeDAO.save(like);
 
         return new LikeResponse(isLiked, post.getLikeCount());
     }
