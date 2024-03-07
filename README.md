@@ -1,5 +1,7 @@
 # Social Media App 🚀
 
+**Note**: The project is still under development. There are some features to be done and improve web sockets(first-time use). 
+
 This is a social media app where users can:
 
 - 📝 Register, log in, and post text and image content
